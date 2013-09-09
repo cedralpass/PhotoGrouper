@@ -1,5 +1,5 @@
 class PhotoGrouper
-  attr_accessor :folder_set, :parent_path, :primary_match, :secondary_match
+  attr_accessor :folder_set, :parent_path, :primary_match, :secondary_match, :image_set
 
   def initialize(parent_path, primary_match, options = {})
     @parent_path = parent_path
@@ -34,5 +34,19 @@ class PhotoGrouper
       dir.close
     end
     output_set
+  end
+
+  def consolidate
+    @image_set = Set.new
+    @folder_set.each do |folder|
+      dir = Dir.new(folder)
+
+      dir.each do |sub_folder|
+        if sub_folder.match('JPG||jpg') && !Dir.exist?(sub_folder)
+          @image_set << folder + '/' + sub_folder if File.file?(folder + '/' + sub_folder)
+
+        end
+      end
+    end
   end
 end
