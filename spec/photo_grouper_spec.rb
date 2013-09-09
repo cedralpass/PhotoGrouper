@@ -24,6 +24,6 @@ describe "PhotoGrouper" do
   it "should loop through a subdirectory and find images creating an image hash" do
     grouper = PhotoGrouper.new(Dir.home + '/Pictures/', '2013_', {:secondary_match => "good"})
     result = grouper.consolidate
-    result.count > 0
+    result.count.should > 0
   end
 end
