@@ -3,6 +3,7 @@ class PhotoGrouper
 
   def initialize(parent_path, regex_match)
     @parent_path = parent_path
+    Dir.chdir(@parent_path)
     dir = Dir.new(@parent_path)
     @folder_set = Set.new
     dir.each do |x|
