@@ -10,4 +10,14 @@ describe "PhotoGrouper" do
       match.to_s.should == '2013_'
     end
   end
+
+  it "should take a secondary match as an option" do
+    grouper = PhotoGrouper.new(Dir.home + '/Pictures/', '2013_', {:secondary_match => "good"})
+    puts "folder_set.count: #{grouper.folder_set.count}"
+        grouper.folder_set.count.should be > 0
+        grouper.folder_set.each do |folder|
+          match = folder.to_s.match 'good'
+          match.to_s.should == 'good'
+    end
+  end
 end
