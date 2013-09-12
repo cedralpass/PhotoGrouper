@@ -25,5 +25,9 @@ describe "PhotoGrouper" do
     grouper = PhotoGrouper.new(Dir.home + '/Pictures/', '2013_', {:secondary_match => "good"})
     result = grouper.consolidate
     result.count.should > 0
+    puts result.inspect
+    result.each do |image|
+      image.match(/JPG/i).nil?.should == false
+    end
   end
 end

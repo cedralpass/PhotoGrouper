@@ -10,7 +10,7 @@ class PhotoGrouper
     Dir.chdir(@parent_path) do |directory|
       dir = Dir.new(directory)
       dir.each do |x|
-        if x.match(@primary_match) && Dir.exist?(x)
+        if x.match(/#{@primary_match}/i) && Dir.exist?(x)
           if @secondary_match
             @folder_set.merge find_matching_paths(dir.path + x, secondary_match, folder_set)
           else
@@ -26,7 +26,7 @@ class PhotoGrouper
     Dir.chdir(path) do |directory|
       dir = Dir.new(directory)
       dir.each do |x|
-        if x.match(match) && Dir.exist?(x)
+        if x.match(/#{match}/i) && Dir.exist?(x)
           path = Dir.new(dir.path + '/' + x).path
           output_set << path
         end
@@ -42,11 +42,12 @@ class PhotoGrouper
       dir = Dir.new(folder)
 
       dir.each do |sub_folder|
-        if sub_folder.match('JPG||jpg') && !Dir.exist?(sub_folder)
+        if sub_folder.match(/JPG/i) && !Dir.exist?(sub_folder)
           @image_set << folder + '/' + sub_folder if File.file?(folder + '/' + sub_folder)
 
         end
       end
     end
+    @image_set
   end
 end
