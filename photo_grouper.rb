@@ -60,6 +60,7 @@ class PhotoGrouper
   end
 
   def copy(path)
+    self.consolidate unless @image_set
     result_set = Set.new
     PhotoGrouper.create_directory(path)
     if @image_set.count > 0
