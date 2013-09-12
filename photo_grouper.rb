@@ -1,4 +1,7 @@
+require 'exifr'
+
 class PhotoGrouper
+
   attr_accessor :folder_set, :parent_path, :primary_match, :secondary_match, :image_set
 
   def initialize(parent_path, primary_match, options = {})
@@ -49,5 +52,22 @@ class PhotoGrouper
       end
     end
     @image_set
+  end
+
+  def self.create_directory(path)
+    FileUtils.mkdir(path) unless Dir.exist?(path)
+    Dir.new(path).to_path
+  end
+
+  def copy(path)
+    result_set = Set.new
+    PhotoGrouper.create_directory(path)
+    if @image_set.count > 0
+      @image_set.each do |image|
+        copy = FileUtils.cp(image, path)
+        result_set << image
+      end
+    end
+    result_set
   end
 end
