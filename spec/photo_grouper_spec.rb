@@ -57,4 +57,19 @@ describe "PhotoGrouper" do
      Dir.rmdir path
 
   end
+
+  it "should namespace an image by its date from exif" do
+    time = EXIFR::JPEG.new('IMG_5165.JPG').date_time.strftime('%Y_%m_%d')
+    time.should == '2013_02_09'
+    namespaced_name = PhotoGrouper.namespace('IMG_5165.JPG')
+    namespaced_name.should == '2013-02-09_IMG_5165.JPG'
+
+  end
+
+  it "should create a new path name, namespaced with time of picture" do
+    path = "/Users/cedralpass/Pictures/2013_09_02/good/IMG_6034.JPG"
+    file_name = PhotoGrouper.extract_file_name path
+    file_name.should == 'IMG_6034.JPG'
+  end
+
 end

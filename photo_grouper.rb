@@ -70,4 +70,14 @@ class PhotoGrouper
     end
     result_set
   end
+
+  def self.extract_file_name(path)
+    File.basename(path)
+  end
+
+  def self.namespace(path)
+    file_name = PhotoGrouper.extract_file_name path
+    date = EXIFR::JPEG.new(path).date_time.strftime('%Y-%m-%d')
+    date + '_' + file_name
+  end
 end
