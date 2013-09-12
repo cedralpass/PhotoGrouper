@@ -1,6 +1,15 @@
 require_relative "../spec/spec_helper"
 
 describe "PhotoGrouper" do
+
+  before(:all) do
+    @path = Dir.pwd
+  end
+
+  before(:each) do
+    Dir.chdir @path
+  end
+
   it "should find folders named good" do
     grouper = PhotoGrouper.new(Dir.home + '/Pictures/', '2013_')
     puts "folder_set.count: #{grouper.folder_set.count}"
@@ -37,6 +46,7 @@ describe "PhotoGrouper" do
     directory_path.should == path
     Dir.exist?(path).should == true
     directory_path = PhotoGrouper.create_directory(path)
+    directory_path.should == path
     #Clean up
     Dir.chdir path
     Dir.chdir '..'
@@ -45,31 +55,30 @@ describe "PhotoGrouper" do
 
 
   it "should copy a file to a destination folder" do
-     path =  '/Users/cedralpass/Pictures/test_dir'
-     grouper = PhotoGrouper.new(Dir.home + '/Pictures/', '2013_', {:secondary_match => "good"})
-     result_to_consolidate = grouper.consolidate
-     results = grouper.copy(path)
-     result_to_consolidate.count.should == results.count
-     #clean up
-     Dir.chdir path
-     FileUtils.rm Dir.glob('*.JPG')
-     Dir.chdir '..'
-     Dir.rmdir path
+    path = '/Users/cedralpass/Pictures/test_dir'
+    grouper = PhotoGrouper.new(Dir.home + '/Pictures/', '2013_', {:secondary_match => "good"})
+    result_to_consolidate = grouper.consolidate
+    results = grouper.copy(path)
+    results.count.should == result_to_consolidate.count
+    #clean up
+    Dir.chdir path
+    FileUtils.rm Dir.glob('*.JPG')
+    Dir.chdir '..'
+    Dir.rmdir path
+    Dir.exist?(path).should == false
 
   end
 
-  it "should namespace an image by its date from exif" do
-    time = EXIFR::JPEG.new('IMG_5165.JPG').date_time.strftime('%Y_%m_%d')
-    time.should == '2013_02_09'
-    namespaced_name = PhotoGrouper.namespace('IMG_5165.JPG')
-    namespaced_name.should == '2013-02-09_IMG_5165.JPG'
-
-  end
-
-  it "should create a new path name, namespaced with time of picture" do
+  it "should extract a file name" do
     path = "/Users/cedralpass/Pictures/2013_09_02/good/IMG_6034.JPG"
     file_name = PhotoGrouper.extract_file_name path
     file_name.should == 'IMG_6034.JPG'
   end
+
+  it "should namespace an image by its date from exif" do
+    namespaced_name = PhotoGrouper.namespace('IMG_5165.JPG')
+    namespaced_name.should == '2013_02_09_IMG_5165.JPG'
+  end
+
 
 end

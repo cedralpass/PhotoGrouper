@@ -64,8 +64,10 @@ class PhotoGrouper
     PhotoGrouper.create_directory(path)
     if @image_set.count > 0
       @image_set.each do |image|
-        copy = FileUtils.cp(image, path)
-        result_set << image
+        new_name = PhotoGrouper.namespace image
+        new_path = path + '/' + new_name
+        FileUtils.cp(image, new_path)
+        result_set << new_path if File.exist? new_path
       end
     end
     result_set
@@ -77,7 +79,7 @@ class PhotoGrouper
 
   def self.namespace(path)
     file_name = PhotoGrouper.extract_file_name path
-    date = EXIFR::JPEG.new(path).date_time.strftime('%Y-%m-%d')
+    date = EXIFR::JPEG.new(path).date_time.strftime('%Y_%m_%d')
     date + '_' + file_name
   end
 end
